@@ -22,6 +22,7 @@ import topi
 from tvm.te import SpecializedCondition
 from .generic import *
 from .. import op as _op
+import os
 
 logger = logging.getLogger('strategy')
 
@@ -83,6 +84,7 @@ def conv2d_strategy_cpu(attrs, inputs, out_type, target):
     if dilation_h < 1 or dilation_w < 1:
         raise ValueError("dilation should be positive value")
 
+    use_gspc = bool(int(os.environ['TVM_USE_GSPC']))
     if groups == 1:
         if layout == "NCHW":
             assert kernel_layout == "OIHW"
@@ -112,7 +114,7 @@ def conv2d_strategy_cpu(attrs, inputs, out_type, target):
                 name="conv2d_hwcn.generic")
         else:
             raise RuntimeError("Unsupported conv2d layout {} for x86".format(layout))
-    elif is_depthwise_conv2d(data.shape, layout, kernel.shape, kernel_layout, groups):
+    elif not use_gspc and is_depthwise_conv2d(data.shape, layout, kernel.shape, kernel_layout, groups):
         if layout == "NCHW":
             assert kernel_layout == "OIHW"
             channel_multiplier = get_const_tuple(inputs[1].shape)[1]
@@ -140,11 +142,18 @@ def conv2d_strategy_cpu(attrs, inputs, out_type, target):
     else: # group_conv2d
         if layout == 'NCHW':
             assert kernel_layout == "OIHW"
-            logger.warning("group_conv2d is not optimized for x86.")
-            strategy.add_implementation(
-                wrap_compute_conv2d(topi.nn.group_conv2d_nchw, has_groups=True),
-                wrap_topi_schedule(topi.generic.schedule_group_conv2d_nchw),
-                name="group_conv2d_nchw.generic")
+            if not use_gspc:
+                logger.warning("group_conv2d is not optimized for x86.")
+                strategy.add_implementation(
+                    wrap_compute_conv2d(topi.nn.group_conv2d_nchw, has_groups=True),
+                    wrap_topi_schedule(topi.generic.schedule_group_conv2d_nchw),
+                    name="group_conv2d_nchw.generic")
+            else:
+                # ours
+                strategy.add_implementation(
+                    wrap_compute_conv2d(topi.x86.group_conv2d_nchw, has_groups=True),
+                    wrap_topi_schedule(topi.x86.schedule_group_conv2d_nchw),
+                    name="group_conv2d_nchw.x86")
         else:
             raise RuntimeError("Unsupported group_conv2d layout {}".format(layout))
     return strategy

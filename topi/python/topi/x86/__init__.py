@@ -38,3 +38,4 @@ from .roi_align import roi_align_nchw
 from .conv2d_transpose import *
 from .sparse import *
 from .conv2d_alter_op import *
+from .group_conv2d import *

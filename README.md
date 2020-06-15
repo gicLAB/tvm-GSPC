@@ -15,33 +15,19 @@
 <!--- specific language governing permissions and limitations -->
 <!--- under the License. -->
 
-<img src=https://raw.githubusercontent.com/apache/incubator-tvm-site/master/images/logo/tvm-logo-small.png width=128/> Open Deep Learning Compiler Stack
-==============================================
-[Documentation](https://tvm.apache.org/docs) |
-[Contributors](CONTRIBUTORS.md) |
-[Community](https://tvm.apache.org/community) |
-[Release Notes](NEWS.md)
+# TVM-GSPC: Optimizing Grouped Convolutions on Edge Devices
 
-[![Build Status](https://ci.tvm.ai/buildStatus/icon?job=tvm/master)](https://ci.tvm.ai/job/tvm/job/master/)
-[![WinMacBuild](https://github.com/apache/incubator-tvm/workflows/WinMacBuild/badge.svg)](https://github.com/apache/incubator-tvm/actions?query=workflow%3AWinMacBuild)
+Modified TVM codebase to add support for Grouped Spatial Pack Convolution (GSPC).
 
-Apache TVM (incubating) is a compiler stack for deep learning systems. It is designed to close the gap between the
-productivity-focused deep learning frameworks, and the performance- and efficiency-focused hardware backends.
-TVM works with deep learning frameworks to provide end to end compilation to different backends.
+Testing in a Debian 10 GNU/Linux Bash environment.
+
+To run a TVM workload using GSPC on x86 and ARM platforms, set the environment variable `TVM_USE_GSPC` to true.  For remote devices, this codebase, or `master` TVM commit `95e06b3ec9` are known to work.
+
+For installation details [see the TVM documentation](https://docs.tvm.ai/install/from_source.html#install-from-source).
+
+
 
 License
 -------
 © Contributors Licensed under an [Apache-2.0](LICENSE) license.
 
-Contribute to TVM
------------------
-TVM adopts apache committer model, we aim to create an open source project that is maintained and owned by the community.
-Checkout the [Contributor Guide](https://tvm.apache.org/docs/contribute/)
-
-Acknowledgement
----------------
-We learned a lot from the following projects when building TVM.
-- [Halide](https://github.com/halide/Halide): Part of TVM's TIR and arithmetic simplification module
-  originates from Halide. We also learned and adapted some part of lowering pipeline from Halide.
-- [Loopy](https://github.com/inducer/loopy): use of integer set analysis and its loop transformation primitives.
-- [Theano](https://github.com/Theano/Theano): the design inspiration of symbolic scan operator for recurrence.

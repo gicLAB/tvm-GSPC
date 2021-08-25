@@ -17,6 +17,8 @@
 
 # TVM-GSPC: Optimizing Grouped Convolutions on Edge Devices
 
+**UPDATE** an improved version of the GSPC implementation is now [merged into the main TVM tree](https://github.com/apache/tvm/pull/6137).  This is the prefered version to use.
+
 Modified TVM codebase to add support for Grouped Spatial Pack Convolution (GSPC).
 
 Testing in a Debian 10 GNU/Linux Bash environment.
